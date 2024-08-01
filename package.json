@@ -1,0 +1,16 @@
+{
+  "name": "verbal-chat",
+  "version": "0.0.1",
+  "description": "A modern video chat web application.",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "Sarthak",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4",
+    "socket.io": "^4.7.5"
+  }
+}
