@@ -18,6 +18,23 @@ let connectedPeers = [];
 io.on("connection", (socket) => {
   connectedPeers.push(socket.id);
   console.log(connectedPeers);
+  // Event Listner for "pre-offer" event || check wss.js in case of doubt
+  socket.on("pre-offer", (data) => {
+    const { callType, calleePersonalCode } = data;
+    // Checking if callee is online
+    const connectedPeer = connectedPeers.find(
+      (peerSocketId) => peerSocketId === calleePersonalCode
+    );
+    if (connectedPeer) {
+      const data = {
+        callType,
+        callerSocketId: socket.id,
+      };
+      // Sending call request to clinet 2
+      io.to(calleePersonalCode).emit("pre-offer", data); // Forwarding connection request to the callee with caller id and type of call
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("User Disconnected");
     const newConnectedPeers = connectedPeers.filter(
