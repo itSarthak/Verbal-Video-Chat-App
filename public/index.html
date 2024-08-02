@@ -7,6 +7,7 @@
     <title>Verbal</title>
   </head>
   <body>
+    <!-- Main Container -->
     <div class="main_container">
       <div class="dashboard_container">
         <div class="logo_container">
@@ -92,6 +93,7 @@
             Allow connection from strangers
           </p>
         </div>
+        <!-- Dashboard Blur div is active when the connection is established, it prevents user from calling while already on call -->
         <div class="dashboard_blur display_none" id="dashboard_blur"></div>
       </div>
       <div class="call_container">
@@ -109,6 +111,7 @@
               autoplay
             ></video>
           </div>
+          <!-- Call Buttons are hidden when user is not on call -->
           <div class="call_buttons_container display_none" id="call_butttons">
             <button class="call_button_small" id="mic_button">
               <img src="./utils/images/mic.png" alt="" id="mic_button_image" />
@@ -142,6 +145,7 @@
               />
             </button>
           </div>
+          <!-- To end the connection in case of chat -->
           <div
             class="finish_chat_button_container"
             id="finish_chat_button_container"
@@ -157,6 +161,7 @@
               />
             </button>
           </div>
+          <!-- Video Recording buttons, hidden when no connection -->
           <div
             class="video_recording_buttons_container display_none"
             id="video_recording_buttons"
@@ -173,6 +178,7 @@
       </div>
       <div class="messenger_container">
         <div class="messages_container" id="messages_container"></div>
+        <!-- Input field to send new messages, hidden in case of no connection -->
         <div class="new_message_container display_none" id="new_message">
           <input
             type="text"
@@ -193,5 +199,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/main.js" type="module"></script>
+    <script src="./js/store.js" type="module"></script>
+    <script src="./js/ui.js" type="module"></script>
   </body>
 </html>
