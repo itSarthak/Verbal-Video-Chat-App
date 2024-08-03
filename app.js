@@ -35,10 +35,11 @@ io.on("connection", (socket) => {
     }
   });
 
+  // In case someone disconnected
   socket.on("disconnect", () => {
     console.log("User Disconnected");
     const newConnectedPeers = connectedPeers.filter(
-      (peerSocketId) => peerSocketId != socket.id
+      (peerSocketId) => peerSocketId !== socket.id
     );
     connectedPeers = newConnectedPeers;
     console.log(connectedPeers);

@@ -5,12 +5,22 @@ import * as ui from "./ui.js";
 let connectedUserDetails;
 // Sending connection request to another client
 export const sendPreOffer = (callType, calleePersonalCode) => {
-  const data = {
+  connectedUserDetails = {
     callType,
-    calleePersonalCode,
+    socketId: calleePersonalCode,
   };
 
-  wss.sendPreOffer(data); // Forwarding the callee details to web socket server
+  if (
+    callType === constants.callType.CHAT_PERSONAL_CODE ||
+    callType === constants.callType.VIDEO_PERSONAL_CODE
+  ) {
+    const data = {
+      callType,
+      calleePersonalCode,
+    };
+    ui.showCallingDialog(callingDialogRejectCallHandler);
+    wss.sendPreOffer(data); // Forwarding the callee details to web socket server
+  }
 };
 
 // Handling connection request
@@ -35,4 +45,8 @@ const acceptCallHandler = () => {
 
 const rejectCallHandler = () => {
   console.log("Call Rejected");
+};
+
+const callingDialogRejectCallHandler = () => {
+  console.log("Rejecting the call");
 };
