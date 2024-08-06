@@ -112,7 +112,7 @@
             ></video>
           </div>
           <!-- Call Buttons are hidden when user is not on call -->
-          <div class="call_buttons_container display_none" id="call_butttons">
+          <div class="call_buttons_container display_none" id="call_buttons">
             <button class="call_button_small" id="mic_button">
               <img src="./utils/images/mic.png" alt="" id="mic_button_image" />
             </button>
@@ -147,13 +147,10 @@
           </div>
           <!-- To end the connection in case of chat -->
           <div
-            class="finish_chat_button_container"
+            class="finish_chat_button_container display_none"
             id="finish_chat_button_container"
           >
-            <button
-              class="call_button_large display_none"
-              id="finish_chat_call_button"
-            >
+            <button class="call_button_large" id="finish_chat_call_button">
               <img
                 src="./utils/images/hangUp.png"
                 alt=""
