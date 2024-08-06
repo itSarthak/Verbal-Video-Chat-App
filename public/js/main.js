@@ -2,9 +2,12 @@ import * as store from "./store.js"; // Contains all the states of our applicati
 import * as wss from "./wss.js"; // Web Socket Server connection and calling request handler
 import * as webRTCHandler from "./webRTCHandler.js"; // Handles all the request related to web Socket
 import * as constants from "./constants.js"; // Handling calls
+
 // Initialization of socket io connection || Server Side
 const socket = io("/");
 wss.registerSocketEvents(socket);
+
+webRTCHandler.getLocalPreview(); // Turning client's camera on
 
 // Registering event listener for personal code copy
 const personalCodeCopyButton = document.getElementById(
