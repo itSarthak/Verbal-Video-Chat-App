@@ -15,6 +15,7 @@ app.get("/", (req, res) => {
 
 let connectedPeers = [];
 
+// 3) Defining events for socket connection
 io.on("connection", (socket) => {
   connectedPeers.push(socket.id);
   console.log(connectedPeers);
@@ -32,6 +33,24 @@ io.on("connection", (socket) => {
       };
       // Sending call request to clinet 2
       io.to(calleePersonalCode).emit("pre-offer", data); // Forwarding connection request to the callee with caller id and type of call
+    } else {
+      const data = {
+        preOfferAnswer: "CALLEE_NOT_FOUND",
+      };
+      io.to(socket.id).emit("pre-offer-answer", data);
+    }
+  });
+
+  socket.on("pre-offer-answer", (data) => {
+    console.log("pre offer answer came");
+    console.log(data);
+
+    const connectedPeer = connectedPeers.find(
+      (peerSocketId) => peerSocketId === data.callerSocketId
+    );
+    console.log(connectedPeer);
+    if (connectedPeer) {
+      io.to(data.callerSocketId).emit("pre-offer-answer", data);
     }
   });
 

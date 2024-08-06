@@ -56,6 +56,14 @@ export const getIncomingCallDialog = (
   dialogContent.appendChild(imageContainer);
   dialogContent.appendChild(buttonContainer);
 
+  acceptCallButton.addEventListener("click", () => {
+    acceptCallHandler();
+  });
+
+  rejectCallButton.addEventListener("click", () => {
+    rejectCallHandler();
+  });
+
   return dialog;
 };
 
@@ -101,6 +109,39 @@ export const getCallingDialog = (rejectCallHandler) => {
   dialogContent.appendChild(title);
   dialogContent.appendChild(imageContainer);
   dialogContent.appendChild(buttonContainer);
+
+  return dialog;
+};
+
+export const getInfoDialog = (dialogTitle, dialogDescription) => {
+  const dialog = document.createElement("div");
+  dialog.classList.add("dialog_wrapper");
+
+  const dialogContent = document.createElement("div");
+  dialogContent.classList.add("dialog_content");
+  dialog.appendChild(dialogContent);
+
+  // Title
+  const title = document.createElement("p");
+  title.classList.add("dialog_title");
+  title.innerHTML = dialogTitle;
+
+  // Profile Element/ Image
+  const imageContainer = document.createElement("div");
+  imageContainer.classList.add("dialog_image_container");
+
+  const image = document.createElement("img");
+  const avatarImagePath = "./utils/images/dialogAvatar.png";
+  image.src = avatarImagePath;
+  imageContainer.appendChild(image);
+
+  const description = document.createElement("p");
+  description.classList.add("dialog_description");
+  description.innerHTML = dialogDescription;
+
+  dialogContent.appendChild(title);
+  dialogContent.appendChild(imageContainer);
+  dialogContent.appendChild(description);
 
   return dialog;
 };
