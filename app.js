@@ -47,12 +47,10 @@ io.on("connection", (socket) => {
 
   socket.on("pre-offer-answer", (data) => {
     console.log("pre offer answer came");
-    console.log(data);
 
     const connectedPeer = connectedPeers.find(
       (peerSocketId) => peerSocketId === data.callerSocketId
     );
-    console.log(connectedPeer);
     if (connectedPeer) {
       io.to(data.callerSocketId).emit("pre-offer-answer", data);
     }
@@ -60,10 +58,12 @@ io.on("connection", (socket) => {
 
   // WebRTC connection request, data contains sdp information
   socket.on("webRTC-signaling", (data) => {
+    console.log("Event Recieved");
     const { connectedUserSocketId } = data;
     const connectedPeer = connectedPeers.find(
-      (peerSocketId) => peerSocketId === callerSocketId
+      (peerSocketId) => peerSocketId === connectedUserSocketId
     );
+    console.log(connectedUserSocketId);
 
     if (connectedPeer) {
       io.to(connectedUserSocketId).emit("webRTC-signaling", data);

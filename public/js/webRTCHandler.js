@@ -29,7 +29,7 @@ const defaultConstraints = {
 const configuration = {
   iceServers: [
     {
-      urls: "stuns:stun.1.google.com:13902",
+      urls: "stun:stun.l.google.com:13902",
     },
   ],
 };
@@ -41,7 +41,6 @@ export const getLocalPreview = () => {
     .then((stream) => {
       ui.updateLocalVideo(stream);
       store.setLocalStream(stream); // We set the value of stream in our state management file
-      console.log(store.getState().localStream.getTracks());
     })
     .catch((err) => {
       console.log("error occured when trying to get an access to camera");
@@ -55,13 +54,18 @@ export const getLocalPreview = () => {
  ** know more about peer-to-peer: https://www.spiceworks.com/tech/networking/articles/what-is-peer-to-peer/
  */
 const createPeerConnection = () => {
-  console.log("Getting ICE candidate from STUN server"); // Means all the stun server is working perfectly to get al the
   peerConnection = new RTCPeerConnection(configuration); // RTCPeerConnection provied method to connect with remote peer
 
   peerConnection.onicecandidate = (event) => {
+    console.log("Getting ICE candidate from STUN server"); // Means all the stun server is working perfectly to get al the
     // Event Listener for ice candidates
     if (event.candidate) {
       // send our ice candidates to other peer for them to check if their ice candidate can connect to any of them
+      wss.sendDataUsingWebRTCSignaling({
+        connectedUserSocketId: connectedUserDetails.socketId,
+        type: constants.webRTCSignaling.ICE_CANDIDATE,
+        candidate: event.candidate,
+      });
     }
   };
 
@@ -231,7 +235,16 @@ export const handleWebRTCOffer = async (data) => {
   });
 };
 
+// Handling a webRTC offer is easy, just change the remote description
 export const handleWebRTCAnswer = async (data) => {
   console.log("Handling webRTC Answer");
   await peerConnection.setRemoteDescription(data.answer);
+};
+
+export const handleWRCCandidate = async (data) => {
+  try {
+    await peerConnection.addIceCandidate(data.candidate);
+  } catch (err) {
+    console.log("error occured when trying to add recieved ice candidate", err);
+  }
 };
