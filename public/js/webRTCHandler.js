@@ -2,24 +2,105 @@ import * as wss from "./wss.js";
 import * as constants from "./constants.js";
 import * as ui from "./ui.js";
 import * as store from "./store.js";
-let connectedUserDetails;
 
+let connectedUserDetails;
+let peerConnection;
+
+/*
+ ** Default constraint is used to set
+ ** the acccess of camera and mic
+ */
 const defaultConstraints = {
   audio: true,
   video: true,
 };
 
+/*
+ ** ICE Candidates: ICE candidate is nothing more than an IP address and port, gathering ICE
+ ** candidate is the process of finding all possible combinations of IP and PORT where a
+ ** PEER is availible for new connection. During Signalling each peer is resonsible for
+ ** gathering their own ICE candidates.
+ */
+
+/*
+ ** ICE server helps in gathering/discovering ICE candidates.
+ ** For more info -> https://medium.com/@mshuecodev/what-should-i-know-about-ice-server-ebed04f54369
+ */
+const configuration = {
+  iceServers: [
+    {
+      urls: "stuns:stun.1.google.com:13902",
+    },
+  ],
+};
+
 export const getLocalPreview = () => {
+  // Local Preview turns on our camera and mic
   navigator.mediaDevices
     .getUserMedia(defaultConstraints)
     .then((stream) => {
       ui.updateLocalVideo(stream);
-      store.setLocalStream(stream);
+      store.setLocalStream(stream); // We set the value of stream in our state management file
+      console.log(store.getState().localStream.getTracks());
     })
     .catch((err) => {
       console.log("error occured when trying to get an access to camera");
       console.log(err);
     });
+};
+
+/*
+ ** Since we need to create a Peer-to-Peer connection between both the clients,
+ ** we'll now create a webRTC offer and send it to callee
+ ** know more about peer-to-peer: https://www.spiceworks.com/tech/networking/articles/what-is-peer-to-peer/
+ */
+const createPeerConnection = () => {
+  console.log("Getting ICE candidate from STUN server"); // Means all the stun server is working perfectly to get al the
+  peerConnection = new RTCPeerConnection(configuration); // RTCPeerConnection provied method to connect with remote peer
+
+  peerConnection.onicecandidate = (event) => {
+    // Event Listener for ice candidates
+    if (event.candidate) {
+      // send our ice candidates to other peer for them to check if their ice candidate can connect to any of them
+    }
+  };
+
+  peerConnection.onconnectionstatechange = (event) => {
+    /*
+     ** Event Listener when the ICE candidates are successfuly
+     ** exchanges and connected to availible one's
+     */
+    if (peerConnection.connectionState === "connected") {
+      console.log("successfully connected with other peer");
+    }
+  };
+
+  // recieve tracks
+  const remoteStream = new MediaStream();
+  store.setRemoteStream(remoteStream);
+  ui.updateRemoteStreamVideo(remoteStream);
+
+  /*
+   ** onTrack is event listener to listen for tracks from callee
+   ** event.track contains both camera and audio streams
+   */
+
+  peerConnection.ontrack = (event) => {
+    remoteStream.addTrack(event.track);
+  };
+
+  // Add our stream to peer connections
+
+  if (
+    // only send streams if the connection is video call
+    connectedUserDetails.callType === constants.callType.VIDEO_PERSONAL_CODE
+  ) {
+    const localStream = store.getState().localStream;
+
+    for (const track of localStream.getTracks()) {
+      peerConnection.addTrack(track, localStream);
+    }
+  }
 };
 // Sending connection request to another client
 export const sendPreOffer = (callType, calleePersonalCode) => {
@@ -59,6 +140,7 @@ export const handlePreOffer = (data) => {
 
 const acceptCallHandler = () => {
   console.log("Call Accepted");
+  createPeerConnection(); // Creating a peer connection when we send a call answer
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
   ui.showCallElements(connectedUserDetails.callType);
 };
@@ -107,5 +189,49 @@ export const handlePreOfferAnswer = (data) => {
   if (preOfferAnswer === constants.preOfferAnswer.CALL_ACCEPTED) {
     // Send WebRTC offer
     ui.showCallElements(connectedUserDetails.callType);
+    createPeerConnection();
+    sendWebRTCOffer();
   }
+};
+
+// Sending WebRTC offer to our caller
+/*
+ ** Initiates the creation of an SDP offer for the purpose of
+ ** starting a new WebRTC connection to a remote peer.
+ ** know more here -> https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer
+ */
+
+/*
+ ** Changes the local description associated with the connection. This description
+ ** specifies the properties of the local end of the connection, including the media format.
+ */
+const sendWebRTCOffer = async () => {
+  // Two line of code below is
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
+
+  wss.sendDataUsingWebRTCSignaling({
+    connectedUserSocketId: connectedUserDetails.socketId,
+    type: constants.webRTCSignaling.OFFER,
+    offer: offer,
+  });
+};
+
+// Handling WebRTC offer, save sdp information on callee as remote description and passw it's own
+export const handleWebRTCOffer = async (data) => {
+  await peerConnection.setRemoteDescription(data.offer); // Save the data as remote description
+
+  const answer = await peerConnection.createAnswer();
+  await peerConnection.setLocalDescription(answer);
+
+  wss.sendDataUsingWebRTCSignaling({
+    connectedUserSocketId: connectedUserDetails.socketId,
+    type: constants.webRTCSignaling.ANSWER,
+    answer: answer,
+  });
+};
+
+export const handleWebRTCAnswer = async (data) => {
+  console.log("Handling webRTC Answer");
+  await peerConnection.setRemoteDescription(data.answer);
 };

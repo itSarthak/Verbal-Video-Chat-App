@@ -27,6 +27,7 @@ const personalCodeVideoButton = document.getElementById(
   "personal_code_video_button"
 );
 
+// Send a chat connection request
 personalCodeChatButton.addEventListener("click", () => {
   console.log("Chat Button Clicked!");
   const calleePersonalCode = document.getElementById(
@@ -36,6 +37,7 @@ personalCodeChatButton.addEventListener("click", () => {
   webRTCHandler.sendPreOffer(callType, calleePersonalCode); // Sending chat call request to the server
 });
 
+// Send a video call request
 personalCodeVideoButton.addEventListener("click", () => {
   console.log("Video Button Clicked!");
   const calleePersonalCode = document.getElementById(

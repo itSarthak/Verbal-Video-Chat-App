@@ -58,6 +58,18 @@ io.on("connection", (socket) => {
     }
   });
 
+  // WebRTC connection request, data contains sdp information
+  socket.on("webRTC-signaling", (data) => {
+    const { connectedUserSocketId } = data;
+    const connectedPeer = connectedPeers.find(
+      (peerSocketId) => peerSocketId === callerSocketId
+    );
+
+    if (connectedPeer) {
+      io.to(connectedUserSocketId).emit("webRTC-signaling", data);
+    }
+  });
+
   // In case someone disconnected
   socket.on("disconnect", () => {
     console.log("User Disconnected");

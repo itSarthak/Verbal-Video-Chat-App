@@ -1,3 +1,10 @@
+/*
+ ** Our application will have multiple states and we need to manage
+ ** each of them, so instead of having them scattered across various
+ ** files, we’ll declare them in a single file and keep accessing
+ ** them going forward. That's why store.js is needed
+ */
+
 // 1) All the state in our application
 let state = {
   socketId: null,

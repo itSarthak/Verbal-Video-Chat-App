@@ -1,7 +1,6 @@
 import * as constants from "./constants.js";
 import * as elements from "./elements.js";
 
-// Updating personal code in the ui
 export const updatePersonalCode = (personalCode) => {
   const personalCodeParagraph = document.getElementById(
     "personal_code_paragraph"
@@ -9,13 +8,20 @@ export const updatePersonalCode = (personalCode) => {
   personalCodeParagraph.innerHTML = personalCode;
 };
 
+// This function will update the local video section in our ui
 export const updateLocalVideo = (stream) => {
   const localVideo = document.getElementById("local_video");
-  localVideo.srcObject = stream;
+  localVideo.srcObject = stream; // updates the source object of our video element
 
+  //The loadedmetadata event occurs when metadata for the specified audio/video has been loaded.
   localVideo.addEventListener("loadedmetadata", () => {
     localVideo.play();
   });
+};
+
+export const updateRemoteStreamVideo = (stream) => {
+  const remoteVideo = document.getElementById("remote_video");
+  remoteVideo.srcObject = stream;
 };
 
 export const showIncomingCallDialog = (
