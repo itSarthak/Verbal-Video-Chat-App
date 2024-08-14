@@ -38,6 +38,19 @@ personalCodeChatButton.addEventListener("click", () => {
 });
 
 // Send a video call request
+
+/*
+ ** FIX ME!!!!!!!!!!!!! FIX ME
+ */
+personalCodeVideoButton.addEventListener("touchend", () => {
+  console.log("Video Button Clicked!");
+  const calleePersonalCode = document.getElementById(
+    "personal_code_input"
+  ).value;
+  const callType = constants.callType.VIDEO_PERSONAL_CODE;
+  webRTCHandler.sendPreOffer(callType, calleePersonalCode);
+});
+
 personalCodeVideoButton.addEventListener("click", () => {
   console.log("Video Button Clicked!");
   const calleePersonalCode = document.getElementById(
@@ -46,3 +59,12 @@ personalCodeVideoButton.addEventListener("click", () => {
   const callType = constants.callType.VIDEO_PERSONAL_CODE;
   webRTCHandler.sendPreOffer(callType, calleePersonalCode);
 });
+
+// const videoCall = () => {
+//   console.log("Video Button Clicked!");
+//   const calleePersonalCode = document.getElementById(
+//     "personal_code_input"
+//   ).value;
+//   const callType = constants.callType.VIDEO_PERSONAL_CODE;
+//   webRTCHandler.sendPreOffer(callType, calleePersonalCode);
+// };

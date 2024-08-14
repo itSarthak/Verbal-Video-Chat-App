@@ -100,7 +100,29 @@ export const showCallElements = (callType) => {
     showVideoCallElements();
   }
 };
+export const showCallWindow = (callType) => {
+  console.log("Working till here");
+  if (callType === constants.callType.CHAT_PERSONAL_CODE) {
+    showChatWindow();
+  }
 
+  if (callType === constants.callType.VIDEO_PERSONAL_CODE) {
+    showVideoWindow();
+  }
+};
+const showChatWindow = () => {
+  // Show Chat Window
+  const chatContainer = document.getElementById("messenger_container");
+  const dashboard = document.getElementById("dashboard_container");
+  dashboard.style.display = "none";
+  chatContainer.style.display = "flex";
+};
+const showVideoWindow = () => {
+  const callContainer = document.getElementById("call_container");
+  const dashboard = document.getElementById("dashboard_container");
+  dashboard.style.display = "none";
+  callContainer.style.display = "flex";
+};
 const showChatCallElements = () => {
   const finishConnectionChatButtonContainer = document.getElementById(
     "finish_chat_button_container"
@@ -122,6 +144,7 @@ const showVideoCallElements = () => {
   showElement(remoteVideo);
   disableDashboard();
 };
+
 // ui helper function
 
 const enableDashboard = () => {

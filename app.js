@@ -58,12 +58,10 @@ io.on("connection", (socket) => {
 
   // WebRTC connection request, data contains sdp information
   socket.on("webRTC-signaling", (data) => {
-    console.log("Event Recieved");
     const { connectedUserSocketId } = data;
     const connectedPeer = connectedPeers.find(
       (peerSocketId) => peerSocketId === connectedUserSocketId
     );
-    console.log(connectedUserSocketId);
 
     if (connectedPeer) {
       io.to(connectedUserSocketId).emit("webRTC-signaling", data);

@@ -147,6 +147,14 @@ const acceptCallHandler = () => {
   createPeerConnection(); // Creating a peer connection when we send a call answer
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
   ui.showCallElements(connectedUserDetails.callType);
+
+  if (
+    navigator.userAgent.match(
+      /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile/i
+    )
+  ) {
+    ui.showCallWindow(connectedUserDetails.callType);
+  }
 };
 
 const rejectCallHandler = () => {
@@ -193,6 +201,15 @@ export const handlePreOfferAnswer = (data) => {
   if (preOfferAnswer === constants.preOfferAnswer.CALL_ACCEPTED) {
     // Send WebRTC offer
     ui.showCallElements(connectedUserDetails.callType);
+    // Check if the user is on Mobile device
+
+    if (
+      navigator.userAgent.match(
+        /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile/i
+      )
+    ) {
+      ui.showCallWindow(connectedUserDetails.callType);
+    }
     createPeerConnection();
     sendWebRTCOffer();
   }
