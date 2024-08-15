@@ -60,6 +60,14 @@ const cameraButton = document.getElementById("camera_button");
 cameraButton.addEventListener("click", () => {
   const localStream = store.getState().localStream;
   const cameraEnabled = localStream.getVideoTracks()[0].enabled;
-  localStream.getAudioTracks()[0].enabled = !cameraEnabled;
+  localStream.getVideoTracks()[0].enabled = !cameraEnabled;
   ui.updateCameraButton(cameraEnabled);
+});
+
+const switchForScreenSharingButton = document.getElementById(
+  "screen_sharing_button"
+);
+switchForScreenSharingButton.addEventListener("click", () => {
+  const screenSharingActive = store.getState().screenSharingActive;
+  webRTCHandler.switchBetweenCameraAndScreenSharing(screenSharingActive);
 });
