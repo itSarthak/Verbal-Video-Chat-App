@@ -145,6 +145,21 @@ const showVideoCallElements = () => {
   disableDashboard();
 };
 
+//  Ui messages
+
+export const appendMessage = (message, right = false) => {
+  const messagesContainer = document.getElementById("messages_container");
+  const messageElement = right
+    ? elements.getRightMessage(message)
+    : elements.getLeftMessage(message);
+
+  messagesContainer.append(messageElement);
+};
+
+export const clearMessenger = () => {
+  const messagesContainer = document.getElementById("messages_container");
+  messagesContainer.querySelectorAll("*").forEach((n) => n.remove());
+};
 // UI call buttons
 
 const micOnImgSrc = "./utils/images/mic.png";

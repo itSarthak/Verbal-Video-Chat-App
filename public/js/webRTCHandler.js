@@ -5,7 +5,7 @@ import * as store from "./store.js";
 
 let connectedUserDetails;
 let peerConnection;
-
+let dataChannel;
 /*
  ** Default constraint is used to set
  ** the acccess of camera and mic
@@ -55,6 +55,22 @@ export const getLocalPreview = () => {
  */
 const createPeerConnection = () => {
   peerConnection = new RTCPeerConnection(configuration); // RTCPeerConnection provied method to connect with remote peer
+
+  dataChannel = peerConnection.createDataChannel("chat");
+
+  peerConnection.ondatachannel = (event) => {
+    const dataChannel = event.channel;
+
+    dataChannel.onopen = () => {
+      console.log("peer connection is ready to recieve data channel messages");
+    };
+
+    dataChannel.onmessage = (event) => {
+      console.log("Message came on data chennel");
+      const message = JSON.parse(event.data);
+      ui.appendMessage(message);
+    };
+  };
 
   peerConnection.onicecandidate = (event) => {
     console.log("Getting ICE candidate from STUN server"); // Means all the stun server is working perfectly to get al the
@@ -106,6 +122,12 @@ const createPeerConnection = () => {
     }
   }
 };
+
+export const sendMessageUsingDataChannel = (message) => {
+  const stringifiedMessage = JSON.stringify(message);
+  dataChannel.send(stringifiedMessage);
+};
+
 // Sending connection request to another client
 export const sendPreOffer = (callType, calleePersonalCode) => {
   connectedUserDetails = {
