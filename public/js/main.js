@@ -2,7 +2,7 @@ import * as store from "./store.js"; // Contains all the states of our applicati
 import * as wss from "./wss.js"; // Web Socket Server connection and calling request handler
 import * as webRTCHandler from "./webRTCHandler.js"; // Handles all the request related to web Socket
 import * as constants from "./constants.js"; // Handling calls
-
+import * as ui from "./ui.js";
 // Initialization of socket io connection || Server Side
 const socket = io("/");
 wss.registerSocketEvents(socket);
@@ -38,19 +38,6 @@ personalCodeChatButton.addEventListener("click", () => {
 });
 
 // Send a video call request
-
-/*
- ** FIX ME!!!!!!!!!!!!! FIX ME
- */
-personalCodeVideoButton.addEventListener("touchend", () => {
-  console.log("Video Button Clicked!");
-  const calleePersonalCode = document.getElementById(
-    "personal_code_input"
-  ).value;
-  const callType = constants.callType.VIDEO_PERSONAL_CODE;
-  webRTCHandler.sendPreOffer(callType, calleePersonalCode);
-});
-
 personalCodeVideoButton.addEventListener("click", () => {
   console.log("Video Button Clicked!");
   const calleePersonalCode = document.getElementById(
@@ -60,11 +47,19 @@ personalCodeVideoButton.addEventListener("click", () => {
   webRTCHandler.sendPreOffer(callType, calleePersonalCode);
 });
 
-// const videoCall = () => {
-//   console.log("Video Button Clicked!");
-//   const calleePersonalCode = document.getElementById(
-//     "personal_code_input"
-//   ).value;
-//   const callType = constants.callType.VIDEO_PERSONAL_CODE;
-//   webRTCHandler.sendPreOffer(callType, calleePersonalCode);
-// };
+// Event Listener for video call buttons
+const micButton = document.getElementById("mic_button");
+micButton.addEventListener("click", () => {
+  const localStream = store.getState().localStream;
+  const micEnabled = localStream.getAudioTracks()[0].enabled;
+  localStream.getAudioTracks()[0].enabled = !micEnabled;
+  ui.updateMicButton(micEnabled);
+});
+
+const cameraButton = document.getElementById("camera_button");
+cameraButton.addEventListener("click", () => {
+  const localStream = store.getState().localStream;
+  const cameraEnabled = localStream.getVideoTracks()[0].enabled;
+  localStream.getAudioTracks()[0].enabled = !cameraEnabled;
+  ui.updateCameraButton(cameraEnabled);
+});
