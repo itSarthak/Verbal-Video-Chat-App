@@ -176,6 +176,42 @@ export const updateCameraButton = (cameraActive) => {
   cameraButtonImage.src = cameraActive ? cameraOffImgSrc : cameraOnImgSrc;
 };
 
+// Recording
+
+export const showRecordingPanel = () => {
+  const recordingButtons = document.getElementById("video_recording_buttons");
+  showElement(recordingButtons);
+
+  // hide start recording button if it is active
+  const startRecordingButton = document.getElementById(
+    "start_recording_button"
+  );
+  hideElement(startRecordingButton);
+};
+
+export const resetRecordingButtons = () => {
+  const recordingButtons = document.getElementById("video_recording_buttons");
+
+  const startRecordingButton = document.getElementById(
+    "start_recording_button"
+  );
+
+  hideElement(recordingButtons);
+  showElement(startRecordingButton);
+};
+
+export const switchRecordingButtons = (switchForResumeButton = false) => {
+  const resumeButton = document.getElementById("resume_recording_button");
+  const pauseButton = document.getElementById("pause_recording_button");
+
+  if (switchForResumeButton) {
+    hideElement(pauseButton);
+    showElement(resumeButton);
+  } else {
+    hideElement(resumeButton);
+    showElement(pauseButton);
+  }
+};
 // ui helper function
 
 const enableDashboard = () => {
