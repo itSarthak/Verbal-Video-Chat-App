@@ -123,6 +123,27 @@ const showVideoWindow = () => {
   dashboard.style.display = "none";
   callContainer.style.display = "flex";
 };
+export const hideCallWindow = (callType) => {
+  if (callType === constants.callType.CHAT_PERSONAL_CODE) {
+    hideChatWindow();
+  }
+
+  if (callType === constants.callType.VIDEO_PERSONAL_CODE) {
+    hideVideoWindow();
+  }
+};
+const hideChatWindow = () => {
+  const chatContainer = document.getElementById("messenger_container");
+  const dashboard = document.getElementById("dashboard_container");
+  dashboard.style.display = "flex";
+  chatContainer.style.display = "none";
+};
+const hideVideoWindow = () => {
+  const callContainer = document.getElementById("call_container");
+  const dashboard = document.getElementById("dashboard_container");
+  dashboard.style.display = "flex";
+  callContainer.style.display = "none";
+};
 const showChatCallElements = () => {
   const finishConnectionChatButtonContainer = document.getElementById(
     "finish_chat_button_container"
@@ -212,6 +233,37 @@ export const switchRecordingButtons = (switchForResumeButton = false) => {
     showElement(pauseButton);
   }
 };
+
+// UI after Hanging Up the call
+export const updateUIAfterHangUp = (callType) => {
+  enableDashboard();
+  //hide call buttons
+  if (
+    callType === constants.callType.VIDEO_PERSONAL_CODE ||
+    callType === constants.callType.VIDEO_STRANGER
+  ) {
+    const callButtons = document.getElementById("call_buttons");
+    hideElement(callButtons);
+  } else {
+    const chatCallButtons = document.getElementById(
+      "finish_chat_button_container"
+    );
+    hideElement(chatCallButtons);
+    const newMessageInput = document.getElementById("new_message");
+    hideElement(newMessageInput);
+    clearMessenger();
+  }
+  updateMicButton(false);
+  updateCameraButton(false);
+
+  // Hide Remote video and show placeholder
+  const remoteVideo = document.getElementById("remote_video");
+  hideElement(remoteVideo);
+  const placeholder = document.getElementById("videos_placeholder");
+  showElement(placeholder);
+  removeAllDialogs();
+};
+
 // ui helper function
 
 const enableDashboard = () => {

@@ -123,3 +123,15 @@ resumeRecordingButton.addEventListener("click", () => {
   recordingUtils.resumeRecording();
   ui.switchRecordingButtons();
 });
+
+// Hang up
+
+const hangUpButton = document.getElementById("hang_up_button");
+hangUpButton.addEventListener("click", () => {
+  webRTCHandler.handleHangUp();
+});
+
+const hangUpChatButton = document.getElementById("finish_chat_call_button");
+hangUpChatButton.addEventListener("click", () => {
+  webRTCHandler.handleHangUp();
+});

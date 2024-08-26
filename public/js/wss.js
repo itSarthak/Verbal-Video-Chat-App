@@ -24,6 +24,12 @@ export const registerSocketEvents = (socket) => {
     webRTCHandler.handlePreOfferAnswer(data);
   });
 
+  // Adding hanging up possiblity
+  socket.on("user-hanged-up", () => {
+    // Bug
+    webRTCHandler.handleConnectedUserHangedUp();
+  });
+
   // Recienving WebRTC signalling event to create a P2P connection b/w caller and callee
   socket.on("webRTC-signaling", (data) => {
     switch (data.type) {
@@ -56,4 +62,9 @@ export const sendPreOfferAnswer = (data) => {
 // Sending a webRTC request and exchanging sdp information || Signalling Channel
 export const sendDataUsingWebRTCSignaling = (data) => {
   socketIO.emit("webRTC-signaling", data);
+};
+
+// Sending Hang Up request to the other person
+export const sendUserHangUp = (data) => {
+  socketIO.emit("user-hanged-up", data);
 };

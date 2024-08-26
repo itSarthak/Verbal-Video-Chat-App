@@ -68,6 +68,17 @@ io.on("connection", (socket) => {
     }
   });
 
+  // When the other user sends a hangup request
+  socket.on("user-hanged-up", (data) => {
+    const { connectedUserSocketId } = data;
+    const connectedPeer = connectedPeers.find(
+      (peerSocketId) => peerSocketId === connectedUserSocketId
+    );
+    if (connectedPeer) {
+      io.to(connectedUserSocketId).emit("user-hanged-up");
+    }
+  });
+
   // In case someone disconnected
   socket.on("disconnect", () => {
     console.log("User Disconnected");
